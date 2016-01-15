@@ -1,4 +1,4 @@
-# Project-iOS
+# Project-iOS in Xcode 7.2 (7C68)
 
 Dit project iOS bevat een mobiele applicatie voor een iPhone / iPad waar iOS 9 op geïnstalleerd is. 
 De applicatie heeft als doel bezoekers van de Gentse Feesten informatie te geven over welke activiteiten of bezienwaardigen er op welke 
