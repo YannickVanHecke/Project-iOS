@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>baseUrlDropbox</key>
+	<string>https://www.dropbox.com/s/050ummyyy01kuq1/genstefeestenevents.json</string>
 	<key>baseUrl</key>
 	<string>http://datatank.stad.gent/4/toerisme/gentsefeestenevents.json</string>
 </dict>
