@@ -29,7 +29,7 @@ class Service {
     private init() {
         let path = NSBundle.mainBundle().pathForResource("Properties", ofType: "plist")!
         let properties = NSDictionary(contentsOfFile: path)!
-        url = NSURL(string: properties["baseUrl"] as! String)!
+        url = NSURL(string: properties["baseUrlDropbox"] as! String)!
         session = NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
     }
     

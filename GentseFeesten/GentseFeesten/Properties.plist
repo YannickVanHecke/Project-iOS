@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>baseUrlDropbox</key>
-	<string>https://www.dropbox.com/s/050ummyyy01kuq1/genstefeestenevents.json</string>
+	<string>https://www.dropbox.com/s/fwgnuoxwduia2a2/gentsefeestenevents.json?dl=0</string>
 	<key>baseUrl</key>
 	<string>http://datatank.stad.gent/4/toerisme/gentsefeestenevents.json</string>
 </dict>
