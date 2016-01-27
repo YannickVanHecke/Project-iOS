@@ -13,8 +13,10 @@ class MasterViewController: UITableViewController, UISplitViewControllerDelegate
 
     var detailViewController: DetailViewController? = nil
     var events = [Event]()
+    var eventsDictionary = [String: [Event]]()
     
     var currentTask = NSURLSessionTask()
+    var sectionCounter = 0
     
     @IBOutlet weak var errorView: UIView!
     @IBOutlet weak var errorLabel: UILabel!
@@ -53,12 +55,52 @@ class MasterViewController: UITableViewController, UISplitViewControllerDelegate
             self.detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
         // voorbeeldproject chamilo
-        print("start data afhalen")
+        
         currentTask = Service.service.createFetchTask{
             
             [unowned self] result in switch result{
             case .Success(let eventsSucces):
                 self.events = eventsSucces
+                var assigment = self.events.sort{$0.titel < $1.titel}
+                
+                self.events = assigment
+                // sorteren
+                //var eventsSorted = [Event]()
+                //eventsSorted = self.events.sort({ $0.datum < $1.datum})
+                //self.events = eventsSorted
+                
+                
+                // Array van Events omzetten naar Dictionary met key datum en value lijst van events.
+                var index = 0
+                var lengte = self.events.count - 1
+                for index in 0...lengte{
+                    var eventsForDate = [Event]()
+                    var datum = self.events[index].datum
+                    
+                    for event in self.events{
+                        if event.datum == datum{
+                            eventsForDate.append(event)
+                        }
+                    }
+                    
+                    
+                    self.eventsDictionary[datum] = eventsForDate
+                }
+                let keysSorted = Array(self.eventsDictionary.keys).sort(){$0 < $1}
+                var dictionaryOrdered = [String: [Event]]()
+                for key in keysSorted{
+                    dictionaryOrdered[key] = self.eventsDictionary[key]
+                }
+                
+                self.eventsDictionary = dictionaryOrdered
+                
+                // Source : http://stackoverflow.com/questions/33317083/swift-sort-dictionary-by-keys-or-by-values-and-return-ordered-array-of-keys?rq=1
+                typealias DictSorter = ((String,[Event]),(String,[Event])) -> Bool
+                let alphaAtoZ: DictSorter = { $0.0 < $1.0 }
+                let listSelector: (String,[Event])->String = { $0.0 }
+                
+                let sortedDictionary = self.eventsDictionary.sort(alphaAtoZ).map(listSelector)
+                
                 self.tableView.reloadData()
                 activityIndicator.stopAnimating()
             case .Failure(let error):
@@ -119,7 +161,10 @@ class MasterViewController: UITableViewController, UISplitViewControllerDelegate
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "showDetail" {
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                let event = events[indexPath.row] 
+                let section = indexPath.section
+                let row = indexPath.row
+                let key = Array(eventsDictionary.keys).sort()[section]
+                let event = self.eventsDictionary[key]![row]
                 let controller = (segue.destinationViewController as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = event
                 controller.navigationItem.title = event.titel
@@ -132,18 +177,26 @@ class MasterViewController: UITableViewController, UISplitViewControllerDelegate
     // MARK: - Table View
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return eventsDictionary.keys.count
     }
-
+    
+    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return Array(eventsDictionary.keys).sort()[section]
+    }
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
+        let key = Array(eventsDictionary.keys).sort()[section]
+        return (self.eventsDictionary[key]?.count)!
     }
-
+    
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
-
-        let event = events[indexPath.row]
-        cell.textLabel!.text = "\(event.datum.stringByReplacingOccurrencesOfString(" Juli ", withString: "/07/")) \(event.titel)"
+        let section = indexPath.section
+        let row = indexPath.row
+        let key = Array(eventsDictionary.keys).sort()[section]
+        let event = self.eventsDictionary[key]![row]
+        cell.textLabel!.text = event.titel
         return cell
     }
 

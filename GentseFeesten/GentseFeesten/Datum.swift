@@ -30,13 +30,12 @@ class Datum
         }
         if (getDate == true && getTime == false)
         {
-            dateFormatter.dateFormat = "dd/MM"
+            dateFormatter.dateFormat = "yyyy/MM/dd"
         }
         
         dateFormatter.timeZone = NSTimeZone(name: "UTC")
         let date = NSDate(timeIntervalSince1970: NSTimeInterval(Double(self.unixDate)!))
 
-        print("\(dateFormatter.stringFromDate(date))")
         return dateFormatter.stringFromDate(date).stringByReplacingOccurrencesOfString("July", withString: "Juli")
     }
 }

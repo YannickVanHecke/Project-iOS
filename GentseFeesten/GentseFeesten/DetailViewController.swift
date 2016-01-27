@@ -11,6 +11,7 @@ import MapKit
 
 class DetailViewController: UIViewController {
 
+    @IBOutlet weak var detailTitelLabel: UILabel!
     @IBOutlet weak var detailBeschrijvingLabel: UILabel! // portrait
     @IBOutlet weak var detailBeschrijvingLabelCopie: UILabel! // landscape
     @IBOutlet weak var detailLocationMap: MKMapView!
@@ -33,7 +34,6 @@ class DetailViewController: UIViewController {
             
             let selectedLoc = view.annotation
             
-            print("Annotation '\(detailItem!.titel)' has been selected")
             
             let currentLocMapItem = MKMapItem.mapItemForCurrentLocation()
             
@@ -45,13 +45,14 @@ class DetailViewController: UIViewController {
             let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
             
             MKMapItem.openMapsWithItems(mapItems, launchOptions:launchOptions)
-            print("MKMapItem.openMapsWithItems(mapItems, launchOptions:launchOptions)")
     }
     
     func configureView() {
         // Update the user interface for the detail item.
         if let detail = self.detailItem {
-            
+            if let labelTitel = self.detailTitelLabel{
+                labelTitel.text = detail.titel
+            }
             if let _ = self.detailLocationMap{
                 // begin voorbeeldproject parkinglots
                 let center = CLLocationCoordinate2D(latitude: Double(detail.latitude)!, longitude: Double(detail.longitude)!)
@@ -65,7 +66,7 @@ class DetailViewController: UIViewController {
                 // eind voorbeeldproject parkinglots
             }
             if let labeluur = self.detailDatumStartuurEinduurLabel{
-                labeluur.text = "Wanneer: \(detail.datum)\(detail.startuur) - \(detail.einduur)"
+                labeluur.text = "Wanneer: \(detail.datum) \(detail.startuur) \(detail.einduur)"
             }
             if let labeladress = self.detailAdresLabel{
                 if (detail.straat != "" && detail.postcode != "" && detail.gemeente != ""){
@@ -77,18 +78,19 @@ class DetailViewController: UIViewController {
                 
             }
             if let labelBeschrijving = self.detailBeschrijvingLabel {
-                print("-- \(detail.omschrijving)")
+                labelBeschrijving.numberOfLines = 30
+                labelBeschrijving.sizeToFit()
                 labelBeschrijving.text = detail.omschrijving
             }
             if let labelBeschrijving = self.detailBeschrijvingLabelCopie {
-                print(detail.omschrijving)
+                labelBeschrijving.numberOfLines = 30
                 labelBeschrijving.text = detail.omschrijving
             }
             if let labelADK = self.detailPrijsADK{
-                labelADK.text = "VVK: \(detail.prijsvvk) ADK: \(detail.prijsadk)"
+                labelADK.text = "ADK: \(detail.prijsadk)"
             }
             if let labelVVK = self.detailPrijsVVK{
-                labelVVK.text = "VVK: \(detail.prijsvvk) ADK: \(detail.prijsadk)"
+                labelVVK.text = "VVK: \(detail.prijsvvk)"
             }
         
                         if let back = self.backButton{

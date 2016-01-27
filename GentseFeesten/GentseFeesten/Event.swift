@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import MapKit
 
-class Event {
+class Event : Equatable {
     var activiteit_id: String = ""
     var titel: String = ""
     var datum: String = ""
@@ -79,8 +79,9 @@ extension Event
         guard let titel = json["titel"] as? String else {
             throw Service.Error.MissingJsonProperty(name: "titel")
         }
+        
         var omschrijving = json["omschrijving"] as? String
-        omschrijving = omschrijving?.stringByReplacingOccurrencesOfString("<p>", withString: "").stringByReplacingOccurrencesOfString("</p>", withString: "").stringByReplacingOccurrencesOfString("&quot;", withString: "'").stringByReplacingOccurrencesOfString("&amp;", withString: "&").stringByReplacingOccurrencesOfString("&nbsp;", withString: " ").stringByReplacingOccurrencesOfString("&rsquo;", withString: "'").stringByReplacingOccurrencesOfString("&#39;", withString: "'").stringByReplacingOccurrencesOfString("&ldquo;", withString: "'").stringByReplacingOccurrencesOfString("rdquo;", withString: "'").stringByReplacingOccurrencesOfString("lsquo;", withString: "'").stringByReplacingOccurrencesOfString("rsquo;", withString: "'").stringByReplacingOccurrencesOfString("!&euro;", withString: "€").stringByReplacingOccurrencesOfString("&copy!", withString: "©").stringByReplacingOccurrencesOfString("<br/>", withString: "\n")
+        omschrijving = omschrijving?.stringByReplacingOccurrencesOfString("<p>", withString: "").stringByReplacingOccurrencesOfString("</p>", withString: "").stringByReplacingOccurrencesOfString("&quot;", withString: "'").stringByReplacingOccurrencesOfString("&amp;", withString: "&").stringByReplacingOccurrencesOfString("&nbsp;", withString: " ").stringByReplacingOccurrencesOfString("&rsquo;", withString: "'").stringByReplacingOccurrencesOfString("&#39;", withString: "'").stringByReplacingOccurrencesOfString("&ldquo;", withString: "'").stringByReplacingOccurrencesOfString("rdquo;", withString: "'").stringByReplacingOccurrencesOfString("lsquo;", withString: "'").stringByReplacingOccurrencesOfString("rsquo;", withString: "'").stringByReplacingOccurrencesOfString("!&euro;", withString: "€").stringByReplacingOccurrencesOfString("&copy!", withString: "©").stringByReplacingOccurrencesOfString("<br/>", withString: "\n").stringByReplacingOccurrencesOfString("\"", withString: "'")
         if (omschrijving == "false")
         {
             omschrijving = ""
@@ -183,8 +184,17 @@ extension Event
         
         let prijs = "Prijs vvk: \(prijsVvk) - Prijs adk: \(prijsAdk)"
             
-
-        self.init(activiteit_id: activiteit_id, titel: titel, omschrijving: omschrijving!, datum: datum!, startuur: startuur!, einduur: einduur!, straat: straat!, postcode: postcode!, gemeente: gemeente!, longitude: longitude!, latitude: latitude!, prijsadk: prijsAdk, prijsvvk: prijsVvk)
+        
+        self.init(activiteit_id: activiteit_id, titel: titel.stringByReplacingOccurrencesOfString("\"", withString: ""), omschrijving: omschrijving!, datum: datum!, startuur: startuur!, einduur: einduur!, straat: straat!, postcode: postcode!, gemeente: gemeente!, longitude: longitude!, latitude: latitude!, prijsadk: prijsAdk, prijsvvk: prijsVvk)
     }
     
     }
+
+func == (lhs: Event, rhs: Event) -> Bool{
+    return (lhs.titel == rhs.titel)
+}
+
+func < (lhs: Event, rhs: Event) -> Bool{
+    return (lhs.datum < rhs.datum) && (lhs.titel < rhs.titel)
+}
+

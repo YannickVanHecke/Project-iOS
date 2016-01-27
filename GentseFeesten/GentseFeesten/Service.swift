@@ -29,7 +29,7 @@ class Service {
     private init() {
         let path = NSBundle.mainBundle().pathForResource("Properties", ofType: "plist")!
         let properties = NSDictionary(contentsOfFile: path)!
-        url = NSURL(string: properties["baseUrlDropbox"] as! String)!
+        url = NSURL(string: properties["baseUrl"] as! String)!
         session = NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
     }
     
@@ -68,16 +68,12 @@ class Service {
                 }
                 catch let error as Error
                 {
-                    print("catch error start")
                     completionHandler(.Failure(error))
-                    print("catch error end")
                 }
                 
             } catch let error as Error {
-                print("do")
                 completionHandler(.Failure(error))
             } catch let error as NSError {
-                print("do ns")
                 completionHandler(.Failure(.InvalidJsonData(message: error.description)))
             }
         }
