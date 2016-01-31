@@ -17,10 +17,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         let splitViewController = self.window!.rootViewController as! UISplitViewController
-        let navigationController = splitViewController.viewControllers[splitViewController.viewControllers.count-1] as! UINavigationController
-        navigationController.topViewController!.navigationItem.leftBarButtonItem = splitViewController.displayModeButtonItem()
+        
+        let leftNavController = splitViewController.viewControllers.first as! UINavigationController
+        let masterViewController  = leftNavController.topViewController as! MasterViewController
+        let rightNavController = splitViewController.viewControllers.last as! UINavigationController
+        let detailViewController  = rightNavController.topViewController as! DetailViewController
+        
+        detailViewController.detailItem = masterViewController.events.first
         splitViewController.delegate = self
         return true
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {
